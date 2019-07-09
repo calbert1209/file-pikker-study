@@ -77,47 +77,52 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         appBar: AppBar(
           title: const Text('File Picker example app'),
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 50.0, bottom: 20.0),
-                    child: RaisedButton(
-                      onPressed: _openFileExplorer,
-                      child: Text("Open file picker"),
+        body: Container(
+          color: Colors.grey,
+          height: 300,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: _localFile != null
+                    ? Container(
+                  child: Image.file(_localFile),
+
+                )
+                    : Container(
+                  color: Colors.grey,
+                  height: 300,
+                ),
+              ),
+              Positioned(
+                  left: 30,
+                  bottom: 30,
+                  child: Center(
+                    child: Text(
+                      'target language',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                  Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: <Widget>[
-                      Container(
-                        child: _localFile != null
-                            ? Image.file(_localFile)
-                            : Container(
-                                width: 100,
-                                height: 100,
-                                color: Colors.grey,
-                              ),
-                      ),
-                      Padding(
-                        child: Text(
-                          'What the fuck?!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24.0,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10.0),
-                      )
-                    ],
-                  )
-                ],
               ),
-            ),
+              Positioned(
+                right: 20,
+                bottom: 20,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                  onPressed: _openFileExplorer,
+                ),
+              )
+            ],
           ),
         ),
       ),

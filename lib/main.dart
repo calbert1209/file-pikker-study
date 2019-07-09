@@ -59,7 +59,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
       var byteData = await File(sourceFilePath).readAsBytes();
       await destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
       destFilePath = destFile.path;
-
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
     } on Exception catch (e) {
@@ -92,15 +91,30 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                       child: Text("Open file picker"),
                     ),
                   ),
-                  _localFile != null
-                      ? Container(
-                          child: Image.file(_localFile),
-                        )
-                      : Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.red,
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: <Widget>[
+                      Container(
+                        child: _localFile != null
+                            ? Image.file(_localFile)
+                            : Container(
+                                width: 100,
+                                height: 100,
+                                color: Colors.grey,
+                              ),
+                      ),
+                      Padding(
+                        child: Text(
+                          'What the fuck?!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24.0,
+                          ),
                         ),
+                        padding: EdgeInsets.all(10.0),
+                      )
+                    ],
+                  )
                 ],
               ),
             ),

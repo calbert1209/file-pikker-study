@@ -79,32 +79,6 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                 ],
               ),
             ),
-            CarouselSlider(
-              height: 300.0,
-              items: [1,2,3,4,5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      decoration: BoxDecoration(
-                        color: Color.fromRGBO((30 * i) + 50, 0, 0, 1),
-                      ),
-                      child: Align(
-                        alignment: Alignment(-0.5,-0.5),
-                        child: Text(
-                            'text $i',
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: Colors.white,
-                            )
-                        ),
-                      )
-                    );
-                  },
-                );
-              }).toList(),
-            )
           ],
         ),
       ),

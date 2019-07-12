@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:path_provider/path_provider.dart';
+import './services/image_picker.dart';
 
 void main() => runApp(FilePickerDemo());
 
@@ -15,55 +12,10 @@ class FilePickerDemo extends StatefulWidget {
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   File _localFile;
-  String _extension;
-  FileType _pickingType = FileType.IMAGE;
-  TextEditingController _controller = TextEditingController();
-  int _counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() => _extension = _controller.text);
-  }
-
-  Future<String> get _appDocDirPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
-
-  Future<File> get _nextLocalFile async {
-    final path = await _appDocDirPath;
-    return File('$path/image-${++_counter}.jpg');
-  }
-
-  Future<File> copyFileToLocal(String sourceFilePath) async {
-    var destFile = await _nextLocalFile;
-    var byteData = await File(sourceFilePath).readAsBytes();
-    return destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
-  }
+  ImagePicker _imagePicker = ImagePicker();
 
   void _openFileExplorer() async {
-    String destFilePath;
-    try {
-      var sourceFilePath = await FilePicker.getFilePath(
-          type: _pickingType, fileExtension: _extension);
-
-      if (_localFile != null) {
-        if (await _localFile.exists()) {
-          await _localFile.delete();
-          _localFile = null;
-        }
-      }
-
-      var destFile = await _nextLocalFile;
-      var byteData = await File(sourceFilePath).readAsBytes();
-      await destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
-      destFilePath = destFile.path;
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
-    } on Exception catch (e) {
-      print("Exception" + e.toString());
-    }
+    String destFilePath = await _imagePicker.getPickedImagePath();
 
     setState(() {
       _localFile = File(destFilePath);
@@ -88,35 +40,34 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
                 right: 0,
                 child: _localFile != null
                     ? Container(
-                  child: Image.file(_localFile),
-
-                )
+                        child: Image.file(_localFile),
+                      )
                     : Container(
-                  color: Colors.grey,
-                  height: 300,
+                        color: Colors.grey,
+                        height: 300,
+                      ),
+              ),
+              Positioned(
+                left: 30,
+                bottom: 30,
+                child: Center(
+                  child: Text(
+                    'target language',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
               Positioned(
-                  left: 30,
-                  bottom: 30,
-                  child: Center(
-                    child: Text(
-                      'target language',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-              ),
-              Positioned(
-                right: 20,
-                bottom: 20,
+                right: 0,
+                top: 0,
                 child: IconButton(
                   icon: Icon(
                     Icons.edit,
-                    size: 30,
+                    size: 20,
                     color: Colors.white,
                   ),
                   onPressed: _openFileExplorer,

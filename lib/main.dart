@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import './services/image_picker.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 void main() => runApp(FilePickerDemo());
 

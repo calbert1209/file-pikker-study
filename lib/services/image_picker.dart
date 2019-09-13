@@ -2,10 +2,12 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ImagePicker {
 
   final FileType _pickingType = FileType.IMAGE;
+  final _uuid = Uuid();
   File _localFile;
   int _counter = 0;
 
@@ -16,7 +18,7 @@ class ImagePicker {
 
   Future<File> get _nextLocalFile async {
     final path = await _appDocDirPath;
-    return File('$path/image-${++_counter}.jpg');
+    return File('$path/${_uuid.v1()}.jpg');
   }
 
   Future<String> getPickedImagePath() async {

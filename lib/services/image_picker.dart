@@ -21,8 +21,8 @@ class ImagePicker {
     return File('$path/${_uuid.v1()}.jpg');
   }
 
-  Future<String> getPickedImagePath() async {
-    String destFilePath;
+  Future<File> getPickedImage() async {
+    File destFile;
     try {
       var sourceFilePath = await FilePicker.getFilePath(type: _pickingType);
 
@@ -33,15 +33,14 @@ class ImagePicker {
         }
       }
 
-      var destFile = await _nextLocalFile;
+      destFile = await _nextLocalFile;
       var byteData = await File(sourceFilePath).readAsBytes();
       await destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
-      destFilePath = destFile.path;
     } on PlatformException catch (e) {
       print("Unsupported operation" + e.toString());
     } on Exception catch (e) {
       print("Exception" + e.toString());
     }
-    return destFilePath;
+    return destFile;
   }
 }

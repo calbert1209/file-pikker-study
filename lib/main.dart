@@ -11,14 +11,25 @@ class FilePickerDemo extends StatefulWidget {
 }
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
-  File _localFile;
-  ImagePicker _imagePicker = ImagePicker();
+  List<File> _localFiles = new List<File>.filled(3, null, growable: false);
+  ImagePicker _imagePicker;
+  PageController _pageController;
 
-  Future<void> _openFileExplorer() async {
+  @override
+  void initState() {
+    super.initState();
+    _imagePicker = ImagePicker();
+    _pageController = PageController(
+      initialPage: 0,
+    );
+  }
+
+  Future<void> _openFileExplorer(int index) async {
     File destFile = await _imagePicker.getPickedImage();
 
     setState(() {
-      _localFile = destFile;
+      // _localFiles.insert(index, destFile);
+      _localFiles[index] = destFile;
     });
   }
 
@@ -29,16 +40,18 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
         appBar: AppBar(
           title: const Text('File Picker example app'),
         ),
-        body: Column(
-          children: <Widget>[
-            PageViewPage(
-              key: Key(_localFile.path),
+        body: PageView(
+          controller: _pageController,
+          children: [0,1,2].map((item){
+            return PageViewPage(
+              index: item,
+              key: Key('$item'),
               onFilePickerCalled: () async {
-                await _openFileExplorer();
+                await _openFileExplorer(item);
               },
-              file: _localFile,
-            ),
-          ],
+              file: _localFiles[item]
+            );
+          }).toList()
         ),
       ),
     );
@@ -48,16 +61,19 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 class PageViewPage extends StatelessWidget {
   final void Function() _onFilePickerCalled;
   final File _file;
+  final int _index;
 
-  PageViewPage({void Function () onFilePickerCalled, File file, Key key})
-    : _onFilePickerCalled = onFilePickerCalled,
-      _file = file,
-      super(key: key);
+  PageViewPage(
+      {void Function() onFilePickerCalled, File file, Key key, int index})
+      : _onFilePickerCalled = onFilePickerCalled,
+        _file = file,
+        _index = index,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey,
+      color: Colors.blue[100 + (100*_index)],
       height: 480,
       child: Stack(
         children: <Widget>[
@@ -67,20 +83,20 @@ class PageViewPage extends StatelessWidget {
             right: 0,
             child: _file != null
                 ? Container(
-              key: Key(_file.path),
-              child: Image.file(_file),
-            )
+                    key: Key(_file.path),
+                    child: Image.file(_file),
+                  )
                 : Container(
-              color: Colors.grey,
-              height: 300,
-            ),
+//                    color: Colors.grey,
+                    height: 300,
+                  ),
           ),
           Positioned(
             left: 30,
             bottom: 30,
             child: Center(
               child: Text(
-                'target language',
+                'Item $_index',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w400,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_pikker/widgets/editable_label.dart';
 import 'package:flutter/material.dart';
 import './services/image_picker.dart';
 
@@ -28,7 +29,7 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     File destFile = await _imagePicker.getPickedImage();
 
     setState(() {
-      // _localFiles.insert(index, destFile);
+      print(destFile.path);
       _localFiles[index] = destFile;
     });
   }
@@ -41,18 +42,16 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           title: const Text('File Picker example app'),
         ),
         body: PageView(
-          controller: _pageController,
-          children: [0,1,2].map((item){
-            return PageViewPage(
-              index: item,
-              key: Key('$item'),
-              onFilePickerCalled: () async {
-                await _openFileExplorer(item);
-              },
-              file: _localFiles[item]
-            );
-          }).toList()
-        ),
+            controller: _pageController,
+            children: [0, 1, 2].map((item) {
+              return PageViewPage(
+                  index: item,
+                  key: Key('$item'),
+                  onFilePickerCalled: () async {
+                    await _openFileExplorer(item);
+                  },
+                  file: _localFiles[item]);
+            }).toList()),
       ),
     );
   }
@@ -73,7 +72,7 @@ class PageViewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue[100 + (100*_index)],
+      color: Colors.blue[100 + (100 * _index)],
       height: 480,
       child: Stack(
         children: <Widget>[
@@ -92,18 +91,21 @@ class PageViewPage extends StatelessWidget {
                   ),
           ),
           Positioned(
-            left: 30,
+            left: 0,
             bottom: 30,
-            child: Center(
-              child: Text(
-                'Item $_index',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.white,
-                ),
-              ),
+            child: EditableLabel(
+              initialLabel: 'Item $_index',
             ),
+//            child: Center(
+//              child: Text(
+//                'Item $_index',
+//                style: TextStyle(
+//                  fontSize: 24,
+//                  fontWeight: FontWeight.w400,
+//                  color: Colors.white,
+//                ),
+//              ),
+//            ),
           ),
           Positioned(
             right: 0,

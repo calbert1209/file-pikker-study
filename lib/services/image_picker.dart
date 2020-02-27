@@ -36,11 +36,11 @@ class ImagePicker {
       destFile = await _nextLocalFile;
       var byteData = await File(sourceFilePath).readAsBytes();
       await destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
+      return destFile;
     } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
+      print("Unsupported operation: " + e.toString());
     } on Exception catch (e) {
-      print("Exception" + e.toString());
+      print("Exception: " + e.toString());
     }
-    return destFile;
   }
 }

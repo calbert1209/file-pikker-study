@@ -42,16 +42,18 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
           title: const Text('File Picker example app'),
         ),
         body: PageView(
-            controller: _pageController,
-            children: [0, 1, 2].map((item) {
-              return PageViewPage(
-                  index: item,
-                  key: Key('$item'),
-                  onFilePickerCalled: () async {
-                    await _openFileExplorer(item);
-                  },
-                  file: _localFiles[item]);
-            }).toList()),
+          controller: _pageController,
+          children: [0, 1, 2].map((item) {
+            return PageViewPage(
+              index: item,
+              key: Key('$item'),
+              onFilePickerCalled: () async {
+                await _openFileExplorer(item);
+              },
+              file: _localFiles[item],
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -96,27 +98,37 @@ class PageViewPage extends StatelessWidget {
             child: EditableLabel(
               initialLabel: 'Item $_index',
             ),
-//            child: Center(
-//              child: Text(
-//                'Item $_index',
-//                style: TextStyle(
-//                  fontSize: 24,
-//                  fontWeight: FontWeight.w400,
-//                  color: Colors.white,
-//                ),
-//              ),
-//            ),
           ),
           Positioned(
             right: 0,
             top: 0,
-            child: IconButton(
-              icon: Icon(
-                Icons.settings,
-                size: 20,
-                color: Colors.white,
+            child: Container(
+              width: 100.0,
+              height: 100.0,
+              alignment: Alignment.topRight,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topRight,
+                  end: Alignment.bottomLeft,
+                  stops: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5],
+                  colors: [
+                    Color.fromRGBO(0, 0, 0, 0.15),
+                    Color.fromRGBO(0, 0, 0, 0.1),
+                    Color.fromRGBO(0, 0, 0, 0.075),
+                    Color.fromRGBO(0, 0, 0, 0.05),
+                    Color.fromRGBO(0, 0, 0, 0.025),
+                    Color.fromRGBO(0, 0, 0, 0.0),
+                  ],
+                ),
               ),
-              onPressed: _onFilePickerCalled,
+              child: IconButton(
+                icon: Icon(
+                  Icons.settings,
+                  size: 20,
+                  color: Colors.white,
+                ),
+                onPressed: _onFilePickerCalled,
+              ),
             ),
           )
         ],

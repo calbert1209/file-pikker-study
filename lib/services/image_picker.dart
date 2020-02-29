@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,9 +39,9 @@ class ImagePicker {
       await destFile.writeAsBytes(byteData, mode: FileMode.write, flush: true);
       return destFile;
     } on PlatformException catch (e) {
-      print("Unsupported operation: " + e.toString());
+      debugPrint("Unsupported operation: " + e.toString());
     } on Exception catch (e) {
-      print("Exception: " + e.toString());
+      debugPrint("Exception: " + e.toString());
     }
   }
 }

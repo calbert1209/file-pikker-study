@@ -72,10 +72,15 @@ class _EditableLabelState extends State<EditableLabel> {
               ? TextFormField(
                   controller: _controller,
                   decoration: InputDecoration(),
+                  onEditingComplete: saveInput,
                 )
               : Text(
                   _labelValue,
                   textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
                 ),
         ),
       ],

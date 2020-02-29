@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 
 class EditableLabel extends StatefulWidget {
   final String _initialLabel;
+  final void Function(String) _onUpdated;
 
-  EditableLabel({Key key, @required String initialLabel})
-      : _initialLabel = initialLabel,
+  EditableLabel({
+    Key key,
+    @required String initialLabel,
+    @required onUpdated,
+  })  : _initialLabel = initialLabel,
+        _onUpdated = onUpdated,
         super(key: key);
 
   @override
@@ -42,6 +47,7 @@ class _EditableLabelState extends State<EditableLabel> {
       _isEditing = false;
       var text = _controller.text;
       if (text.length > 0) {
+        widget._onUpdated(_controller.value.text);
         _labelValue = _controller.value.text;
       }
     });
@@ -50,7 +56,6 @@ class _EditableLabelState extends State<EditableLabel> {
   @override
   Widget build(BuildContext context) {
     return Row(
-
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         IconButton(
@@ -66,8 +71,7 @@ class _EditableLabelState extends State<EditableLabel> {
           child: _isEditing
               ? TextFormField(
                   controller: _controller,
-                  decoration: InputDecoration(
-                  ),
+                  decoration: InputDecoration(),
                 )
               : Text(
                   _labelValue,

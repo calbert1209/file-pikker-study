@@ -13,6 +13,7 @@ class FilePickerDemo extends StatefulWidget {
 
 class _FilePickerDemoState extends State<FilePickerDemo> {
   List<File> _localFiles = new List<File>.filled(3, null, growable: false);
+  List<String> _labels = ["item 0", "item 1", "item 2"];
   ImagePicker _imagePicker;
   PageController _pageController;
 
@@ -34,6 +35,13 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
     });
   }
 
+  void _updateLabelStore(int index, String label) {
+    setState(() {
+      print("updating label at index $index to $label");
+      _labels[index] = label;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -50,7 +58,11 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
               onFilePickerCalled: () async {
                 await _openFileExplorer(item);
               },
+              onLabelUpdated: (String label) {
+                _updateLabelStore(item, label);
+              },
               file: _localFiles[item],
+              label: _labels[item],
             );
           }).toList(),
         ),
@@ -61,18 +73,29 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
 class PageViewPage extends StatelessWidget {
   final void Function() _onFilePickerCalled;
+  final void Function(String) _onLabelUpdated;
   final File _file;
   final int _index;
+  final String _label;
 
-  PageViewPage(
-      {void Function() onFilePickerCalled, File file, Key key, int index})
-      : _onFilePickerCalled = onFilePickerCalled,
+  PageViewPage({
+    Key key,
+    int index,
+    void Function() onFilePickerCalled,
+    void Function(String) onLabelUpdated,
+    File file,
+    String label,
+  })  : _onFilePickerCalled = onFilePickerCalled,
+        _onLabelUpdated = onLabelUpdated,
         _file = file,
         _index = index,
+        _label = label,
+        assert(label != null),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    assert(_label != null);
     return Container(
       color: Colors.blue[100 + (100 * _index)],
       height: 480,
@@ -87,16 +110,14 @@ class PageViewPage extends StatelessWidget {
                     key: Key(_file.path),
                     child: Image.file(_file),
                   )
-                : Container(
-//                    color: Colors.grey,
-                    height: 300,
-                  ),
+                : Container(),
           ),
           Positioned(
             left: 0,
             bottom: 30,
             child: EditableLabel(
-              initialLabel: 'Item $_index',
+              initialLabel: _label,
+              onUpdated: _onLabelUpdated,
             ),
           ),
           Positioned(
@@ -123,7 +144,7 @@ class PageViewPage extends StatelessWidget {
               ),
               child: IconButton(
                 icon: Icon(
-                  Icons.settings,
+                  Icons.image,
                   size: 20,
                   color: Colors.white,
                 ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:async';
 import 'package:file_pikker/widgets/editable_label.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,23 +38,10 @@ class EditablePage extends StatelessWidget {
       child: Stack(
         fit: StackFit.loose,
         children: <Widget>[
-          Container(
-              key: Key(_file?.path ?? Uuid().v1()),
-              width: deviceData.size.width,
-              height: deviceData.size.height,
-              decoration: _file != null
-                  ? BoxDecoration(
-                      image: DecorationImage(
-                        alignment: Alignment.topCenter,
-                        fit: BoxFit.fitWidth,
-                        // TODO use completer to listen for image load
-                        // use future builder to await completer's future
-                        // and display waiting and completed UI, etc.
-                        // HINT: https://stackoverflow.com/a/44683714
-                        image: FileImage(_file),
-                      ),
-                    )
-                  : BoxDecoration()),
+          FutureImageBuilder(
+            key: Key(_file?.path ?? Uuid().v1()),
+            file: _file,
+          ),
           Positioned(
             left: 0,
             right: 0,
@@ -77,6 +65,70 @@ class EditablePage extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class FutureImageBuilder extends StatelessWidget {
+  const FutureImageBuilder({
+    Key key,
+    @required File file,
+  })  : _key = key,
+        _file = file,
+        super(key: key);
+
+  final File _file;
+  final Key _key;
+
+  @override
+  Widget build(BuildContext context) {
+    var deviceData = MediaQuery.of(context);
+    if (_file == null) {
+      return Container();
+    }
+
+    var loadTask = Completer<ImageInfo>();
+    var fileImage = FileImage(_file);
+    fileImage
+        .resolve(ImageConfiguration())
+        .addListener(ImageStreamListener((ImageInfo info, bool _) {
+      loadTask.complete(info);
+    }));
+
+    return FutureBuilder(
+      future: loadTask.future,
+      builder: (BuildContext context, AsyncSnapshot<ImageInfo> snapshot) {
+        if (!snapshot.hasData) {
+          return Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                    value: null,
+                    strokeWidth: 5.0,
+                  ),
+            ),
+          );
+        }
+
+        return Container(
+          key: _key,
+          width: deviceData.size.width,
+          height: deviceData.size.height,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              alignment: Alignment.topCenter,
+              fit: BoxFit.fitWidth,
+              // TODO use completer to listen for image load
+              // use future builder to await completer's future
+              // and display waiting and completed UI, etc.
+              // HINT: https://stackoverflow.com/a/44683714
+              image: fileImage,
+            ),
+          ),
+        );
+      },
     );
   }
 }

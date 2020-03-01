@@ -27,6 +27,9 @@ class ImagePicker {
     try {
       var sourceFilePath = await FilePicker.getFilePath(type: _pickingType);
 
+      if (sourceFilePath == null) {
+        return null;
+      }
       if (_localFile != null) {
         if (await _localFile.exists()) {
           await _localFile.delete();

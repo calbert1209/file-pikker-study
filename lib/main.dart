@@ -28,6 +28,9 @@ class _FilePickerDemoState extends State<FilePickerDemo> {
 
   Future<void> _openFileExplorer(int index) async {
     File destFile = await _imagePicker.getPickedImage();
+    if (destFile == null) {
+      return;
+    }
 
     setState(() {
       debugPrint(destFile.path);

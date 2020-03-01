@@ -101,14 +101,11 @@ class FutureImageBuilder extends StatelessWidget {
         if (!snapshot.hasData) {
           return Align(
             alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: CircularProgressIndicator(
+            child: LinearProgressIndicator(
                     backgroundColor: Colors.white,
                     value: null,
-                    strokeWidth: 5.0,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey),
                   ),
-            ),
           );
         }
 

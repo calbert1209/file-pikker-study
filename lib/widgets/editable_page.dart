@@ -46,6 +46,10 @@ class EditablePage extends StatelessWidget {
                       image: DecorationImage(
                         alignment: Alignment.topCenter,
                         fit: BoxFit.fitWidth,
+                        // TODO use completer to listen for image load
+                        // use future builder to await completer's future
+                        // and display waiting and completed UI, etc.
+                        // HINT: https://stackoverflow.com/a/44683714
                         image: FileImage(_file),
                       ),
                     )

@@ -39,7 +39,7 @@ class PageDatabase {
     return this._box.get(key);
   }
 
-  Future<void> setAt(int index, Page value) async {
+  Future<void> putAt(int index, Page value) async {
     var key = this._box.keyAt(index);
     return this._box.put(key, value);
   }
